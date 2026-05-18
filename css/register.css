@@ -1,0 +1,65 @@
+body.register-page {
+  min-height: 100vh;
+}
+
+.register-background {
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(18,18,23,0.86) 0%, rgba(18,18,23,0.86) 100%), url("../background2.jpg") center/cover no-repeat;
+  position: relative;
+}
+
+.register-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 8, 45, 0.65);
+}
+
+.register-container {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 2rem 2rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.register-card h4 {
+  margin-bottom: 1.5rem;
+}
+
+.register-card .input-field input {
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+
+.register-card .input-field input:focus {
+  border-bottom: 1px solid #d7b8ff;
+  box-shadow: 0 1px 0 0 #d7b8ff;
+}
+
+.register-card .input-field label {
+  color: rgba(255,255,255,0.8);
+}
+
+.register-card .input-field input[type=email].valid,
+.register-card .input-field input[type=password].valid {
+  color: #ffffff;
+}
+
+.register-card .btn-large {
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+.register-card .btn-large:hover {
+  background: #7b1fa2 !important;
+}
