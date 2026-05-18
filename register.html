@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Registro VivaEventos</title>
+    <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/register.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+
+<body class="register-page">
+
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="index.html" class="brand-logo white-text">VivaEventos</a>
+    </div>
+
+  <div class="register-background">
+    <div class="register-overlay"></div>
+    <div class="register-container valign-wrapper">
+      <div class="card-panel grey darken-4 white-text register-card">
+        <h4 class="center">Registrarse</h4>
+        <div class="input-field">
+          <input id="name" type="text" class="white-text validate">
+          <label class="active" for="name">Nombre completo</label>
+        </div>
+        <div class="input-field">
+          <input id="email" type="email" class="white-text validate">
+          <label class="active" for="email">Correo electrónico</label>
+        </div>
+        <div class="input-field">
+          <input id="password" type="password" class="white-text validate">
+          <label class="active" for="password">Contraseña</label>
+        </div>
+        <h10 class="center"><a href="login.html" class="white-text">¿Ya tienes una cuenta? Inicia sesión aquí</a></h5>
+        <div class="center">
+          <a class="btn-large purple accent-3 waves-effect waves-light" onclick="register()">Registrarse</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+async function register() {
+
+    const response = await fetch("http://localhost:8080/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    });
+
+    const data = await response.text();
+
+    if(response.ok){
+        alert("Registro exitoso");
+        window.location.href = "login.html";
+        return;
+    }
+}
+</script>
+
+</body>
+</html>

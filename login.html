@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Inicio de sesion VivaEventos</title>
+    <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+
+<body class="login-page">
+
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="index.html" class="brand-logo white-text">VivaEventos</a>
+    </div>
+
+  <div class="login-background">
+    <div class="login-overlay"></div>
+    <div class="login-container valign-wrapper">
+      <div class="card-panel grey darken-4 white-text login-card">
+        <h4 class="center">Iniciar Sesión</h4>
+        <div class="input-field">
+          <input id="email" type="email" class="white-text validate">
+          <label class="active" for="email">Correo electrónico</label>
+        </div>
+        <div class="input-field">
+          <input id="password" type="password" class="validate">
+          <label class="active" for="password">Contraseña</label>
+        </div>
+        <h10 class="center"><a href="register.html" class="white-text">¿No tienes una cuenta? Registrate aqui</a></h5>
+        <div class="center">
+          <a class="btn-large purple accent-3 waves-effect waves-light" onclick="login()">Entrar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+async function login() {
+
+    const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    });
+
+    if (!response.ok) {
+        alert("Credenciales incorrectas");
+        return;
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem("token", data.token);
+
+    window.location.href = "home.html";
+}
+
+</script>
+
+</body>
+</html>

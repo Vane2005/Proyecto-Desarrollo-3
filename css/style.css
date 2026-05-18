@@ -1,0 +1,205 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+body {
+  background: #121217;
+  color: #ECE9FF;
+  min-height: 100vh;
+}
+
+nav,
+footer.page-footer {
+  background: #2a0e3d !important;
+}
+
+nav ul a,
+nav .brand-logo,
+.sidenav a {
+  color: #f3e8ff !important;
+}
+
+p,
+.card-content p,
+.card-panel p {
+  line-height: 1.8rem;
+  color: #d6d0f0;
+}
+
+#logo-container {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.sidenav-trigger {
+  color: #f3e8ff;
+}
+
+.parallax-container {
+  min-height: 420px;
+  line-height: 0;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-container .section {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.parallax-container .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 10, 40, 0.72);
+  z-index: 1;
+}
+
+#about .section,
+#contact .section,
+#features {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+#features .card-panel,
+#contact .card,
+#contact .card-panel {
+  border-radius: 16px;
+}
+
+.card-panel,
+.card {
+  background: rgba(34, 13, 60, 0.92) !important;
+}
+
+.card-content {
+  color: #ece9ff;
+}
+
+.card-title,
+h1,
+h3,
+h4,
+h5 {
+  color: #f8efff;
+}
+
+.btn,
+.btn-large {
+  border-radius: 999px;
+}
+
+.btn-large.purple.accent-3 {
+  background: #8e24aa;
+}
+
+.btn-large.grey.darken-4 {
+  background: #2e2538;
+}
+
+.icon-block .material-icons,
+.large.material-icons {
+  font-size: 4rem;
+  color: #d7b8ff;
+}
+
+footer.page-footer,
+.footer-copyright {
+  background: #220a3d !important;
+}
+
+footer.page-footer ul li a {
+  color: #d7c9ff;
+}
+
+footer.page-footer ul li a:hover {
+  color: #ffffff;
+}
+
+@media only screen and (max-width : 992px) {
+  .parallax-container .section {
+    position: relative;
+    top: 0;
+  }
+}
+
+@media only screen and (max-width : 600px) {
+  #index-banner .section {
+    padding-top: 3rem;
+  }
+}
+
+body.login-page {
+  min-height: 100vh;
+}
+
+.login-background {
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(18,18,23,0.86) 0%, rgba(18,18,23,0.86) 100%), url("../background2.jpg") center/cover no-repeat;
+  position: relative;
+}
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 8, 45, 0.65);
+}
+
+.login-container {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 2rem 2rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.login-card h4 {
+  margin-bottom: 1.5rem;
+}
+
+.login-card .input-field input {
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+
+.login-card .input-field input:focus {
+  border-bottom: 1px solid #d7b8ff;
+  box-shadow: 0 1px 0 0 #d7b8ff;
+}
+
+.login-card .input-field label {
+  color: rgba(255,255,255,0.8);
+}
+
+.login-card .input-field input[type=email].valid,
+.login-card .input-field input[type=password].valid {
+  color: #ffffff;
+}
+
+.login-card .btn-large {
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+.login-card .btn-large:hover {
+  background: #7b1fa2 !important;
+}
