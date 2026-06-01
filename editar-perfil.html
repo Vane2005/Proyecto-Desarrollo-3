@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Editar Perfil — VivaEventos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/perfil.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="home.html" class="brand-logo white-text">VivaEventos</a>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="home.html" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
+            <li><a href="perfil.html" class="white-text active-nav"><i class="material-icons left">account_circle</i>Mi Perfil</a></li>
+            <li><a href="login.html" class="white-text" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="nav-mobile">
+    <li><a href="home.html"><i class="material-icons left">home</i>Inicio</a></li>
+    <li><a href="perfil.html"><i class="material-icons left">account_circle</i>Mi Perfil</a></li>
+    <li><a href="login.html" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+</ul>
+
+<main class="container perfil-main">
+
+    <!-- Breadcrumb -->
+    <div class="editar-breadcrumb">
+        <a href="perfil.html" class="white-text"><i class="material-icons tiny">arrow_back</i> Volver al perfil</a>
+    </div>
+
+    <!-- Formulario edicion -->
+    <div class="card-panel perfil-section">
+        <h5><i class="material-icons left">edit</i>Editar Perfil</h5>
+
+        <!-- Tabs -->
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs editar-tabs" id="editarTabs">
+                    <li class="tab col s6"><a href="#tab-datos" class="active">Datos Personales</a></li>
+                    <li class="tab col s6"><a href="#tab-seguridad">Seguridad</a></li>
+                </ul>
+            </div>
+
+            <!-- Tab: Datos Personales -->
+            <div id="tab-datos" class="col s12">
+                <form id="formDatos" class="editar-form">
+
+                    <!-- Avatar preview -->
+                    <div class="editar-avatar-wrap center">
+                        <div class="perfil-avatar" id="avatarPreview">JD</div>
+                        <p class="editar-avatar-hint">Las iniciales se generan automaticamente</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">person</i>
+                            <input id="inputNombre" type="text" class="white-text validate" value="Juan">
+                            <label class="active" for="inputNombre">Nombre</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">person_outline</i>
+                            <input id="inputApellido" type="text" class="white-text validate" value="Diaz">
+                            <label class="active" for="inputApellido">Apellido</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">email</i>
+                            <input id="inputEmail" type="email" class="white-text validate" value="juan.diaz@email.com">
+                            <label class="active" for="inputEmail">Correo electronico</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">phone</i>
+                            <input id="inputTelefono" type="tel" class="white-text" value="+57 300 000 0000">
+                            <label class="active" for="inputTelefono">Telefono</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">badge</i>
+                            <input id="inputDocumento" type="text" class="white-text" value="1020304050">
+                            <label class="active" for="inputDocumento">Numero de documento</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">location_city</i>
+                            <input id="inputCiudad" type="text" class="white-text" value="Bogota">
+                            <label class="active" for="inputCiudad">Ciudad</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">notes</i>
+                            <textarea id="inputBio" class="materialize-textarea white-text">Amante de la musica y los festivales.</textarea>
+                            <label class="active" for="inputBio">Descripcion (opcional)</label>
+                        </div>
+                    </div>
+
+                    <!-- Alerta de exito -->
+                    <div class="editar-alert editar-alert-success hide" id="alertaExito">
+                        <i class="material-icons">check_circle</i> Perfil actualizado correctamente
+                    </div>
+                    <div class="editar-alert editar-alert-error hide" id="alertaError">
+                        <i class="material-icons">error</i> Ocurrio un error. Intenta de nuevo.
+                    </div>
+
+                    <div class="editar-actions">
+                        <a href="perfil.html" class="btn waves-effect waves-light grey darken-2">Cancelar</a>
+                        <button type="submit" class="btn waves-effect waves-light purple accent-3">
+                            <i class="material-icons left">save</i>Guardar cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Tab: Seguridad -->
+            <div id="tab-seguridad" class="col s12">
+                <form id="formSeguridad" class="editar-form">
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">lock</i>
+                            <input id="passActual" type="password" class="white-text">
+                            <label for="passActual">Contrasena actual</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">lock_outline</i>
+                            <input id="passNueva" type="password" class="white-text" oninput="evaluarPassword(this.value)">
+                            <label for="passNueva">Nueva contrasena</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <i class="material-icons prefix">lock_outline</i>
+                            <input id="passConfirmar" type="password" class="white-text">
+                            <label for="passConfirmar">Confirmar nueva contrasena</label>
+                        </div>
+                    </div>
+
+                    <!-- Indicador fortaleza -->
+                    <div class="pass-strength-wrap">
+                        <div class="pass-strength-bar">
+                            <div class="pass-strength-fill" id="passStrengthFill"></div>
+                        </div>
+                        <span class="pass-strength-label" id="passStrengthLabel">Ingresa una contrasena</span>
+                    </div>
+
+                    <!-- 2FA -->
+                    <div class="twofa-card">
+                        <div class="twofa-info">
+                            <i class="material-icons">security</i>
+                            <div>
+                                <p class="twofa-title">Autenticacion de dos factores (2FA)</p>
+                                <p class="twofa-desc">Agrega una capa extra de seguridad a tu cuenta</p>
+                            </div>
+                        </div>
+                        <div class="switch">
+                            <label>
+                                No
+                                <input type="checkbox" id="switch2fa">
+                                <span class="lever"></span>
+                                Si
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Alertas seguridad -->
+                    <div class="editar-alert editar-alert-success hide" id="alertaSegExito">
+                        <i class="material-icons">check_circle</i> Contrasena actualizada correctamente
+                    </div>
+                    <div class="editar-alert editar-alert-error hide" id="alertaSegError">
+                        <i class="material-icons">error</i> Las contrasenas no coinciden o la actual es incorrecta.
+                    </div>
+
+                    <div class="editar-actions">
+                        <a href="perfil.html" class="btn waves-effect waves-light grey darken-2">Cancelar</a>
+                        <button type="submit" class="btn waves-effect waves-light purple accent-3">
+                            <i class="material-icons left">save</i>Actualizar contrasena
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="js/materialize.js"></script>
+<script src="js/perfil.js"></script>
+</body>
+</html>

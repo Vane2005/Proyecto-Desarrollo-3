@@ -41,7 +41,7 @@
 
 async function login() {
 
-    const response = await fetch("http://localhost:8080/auth/login", {
+    const response = await fetch("http://localhost:8081/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -59,9 +59,11 @@ async function login() {
 
     const data = await response.json();
 
-    localStorage.setItem("token", data.token);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('userEmail', document.getElementById('email').value);
+    window.location.href = 'home.html';
 
-    window.location.href = "home.html";
 }
 
 </script>
