@@ -47,11 +47,11 @@
         .btn-pay:hover { background: #6d28d9; }
         .state-box { text-align: center; padding: 2rem 0; color: #a98ecf; }
         .state-box .material-icons { font-size: 2.8rem; display: block; margin-bottom: 0.8rem; }
-        .wompi-badge {
+        .stripe-badge {
             display: flex; align-items: center; justify-content: center;
             gap: 6px; color: #6b7280; font-size: 0.78rem; margin-top: 1.2rem;
         }
-        .wompi-badge .material-icons { font-size: 1rem; }
+        .stripe-badge .material-icons { font-size: 1rem; }
         #step-result { display: none; }
         .result-icon-ok { color: #22c55e; font-size: 4rem !important; }
         .result-icon-fail { color: #ef4444; font-size: 4rem !important; }
@@ -109,9 +109,9 @@
                 <i class="material-icons left">lock</i>Pagar ahora
             </button>
 
-            <div class="wompi-badge">
+            <div class="stripe-badge">
                 <i class="material-icons">security</i>
-                Pago seguro procesado por Wompi
+                Pago seguro procesado por Stripe
             </div>
         </div>
     </div>
@@ -151,20 +151,53 @@
     const userEmail = localStorage.getItem('userEmail');
     const eventId = localStorage.getItem('selectedEventId');
 
-    if (!token) window.location.href = 'login.html';
-
     let ticketTypes = [];
     let selectedTicket = null;
 
     // ── Inicializar ──────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', async () => {
         M.FormSelect.init(document.querySelectorAll('select'));
-        await cargarTicketTypes();
 
-        // ¿Viene de redirect de Wompi?
         const params = new URLSearchParams(window.location.search);
-        const txStatus = params.get('status') || params.get('transaction_status');
-        if (txStatus) mostrarResultado(txStatus);
+        const sessionId = params.get('session_id');
+        const cancelled = params.get('cancelled');
+
+        if (sessionId) {
+            // Limpiar flags temporales
+            localStorage.removeItem('stripeReturnPending');
+            // Mostrar éxito y redirigir a home después de 3 segundos
+            mostrarPaso('result');
+            document.getElementById('result-content').innerHTML = `
+            <i class="material-icons result-icon-ok">check_circle</i>
+            <h5 style="color:#22c55e;margin:0 0 0.5rem">¡Pago exitoso!</h5>
+            <p style="color:#a98ecf">Tu boleta fue confirmada. Redirigiendo a eventos...</p>
+        `;
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 3000);
+            return;
+        }
+
+        if (cancelled === 'true') {
+            mostrarPaso('result');
+            document.getElementById('result-content').innerHTML = `
+            <i class="material-icons result-icon-fail">cancel</i>
+            <h5 style="color:#ef4444;margin:0 0 0.5rem">Pago cancelado</h5>
+            <p style="color:#a98ecf">Volviendo a eventos...</p>
+            <a href="home.html" class="btn purple darken-3 waves-effect" style="margin-top:1.5rem">
+                Volver a eventos
+            </a>
+        `;
+            return;
+        }
+
+        // Flujo normal — verificar sesión y cargar tickets
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        await cargarTicketTypes();
     });
 
     // ── Cargar tipos de boleta desde el event-service ────────────
@@ -275,20 +308,19 @@
             }
             const payment = await payRes.json();
 
-            // Redirección real a Wompi
-            if (payment.checkoutUrl && !payment.checkoutUrl.includes('sandbox-local')) {
+
+            if (payment.checkoutUrl) {
+                localStorage.setItem('stripeReturnPending', 'true');
+                localStorage.setItem('stripeEventId', eventId); // por si se pierde
                 window.location.href = payment.checkoutUrl;
             } else {
-
+                // Fallback para modo sandbox (PAYMENT_GATEWAY_PROVIDER=sandbox)
                 if (payment.status === 'APROBADO') {
                     mostrarResultado('APPROVED');
                 } else if (payment.status === 'FALLIDO') {
                     mostrarResultado('FAILED', payment.failureReason);
                 } else {
-                    mostrarResultado(
-                        'PENDING',
-                        'Tu pago se encuentra en proceso de validación.'
-                    );
+                    mostrarResultado('PENDING', 'Tu pago se encuentra en proceso de validación.');
                 }
             }
 
