@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Mi Perfil — VivaEventos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/perfil.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="home.html" class="brand-logo white-text">VivaEventos</a>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="home.html" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
+            <li><a href="perfil.html" class="white-text active-nav"><i class="material-icons left">account_circle</i>Mi Perfil</a></li>
+            <li><a href="login.html" class="white-text" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="nav-mobile">
+    <li><a href="home.html"><i class="material-icons left">home</i>Inicio</a></li>
+    <li><a href="perfil.html"><i class="material-icons left">account_circle</i>Mi Perfil</a></li>
+    <li><a href="login.html" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+</ul>
+
+<main class="container perfil-main">
+
+    <!-- Encabezado del perfil -->
+    <div class="perfil-hero card-panel">
+        <div class="perfil-avatar-wrap">
+            <div class="perfil-avatar" id="avatarInitials">JD</div>
+            <div class="perfil-avatar-badge">
+                <i class="material-icons">verified</i>
+            </div>
+        </div>
+        <div class="perfil-hero-info">
+            <h4 id="nombreUsuario">Juan Diaz</h4>
+            <p id="emailUsuario" class="perfil-email"><i class="material-icons tiny">email</i> juan.diaz@email.com</p>
+            <p id="telefonoUsuario" class="perfil-email"><i class="material-icons tiny">phone</i> +57 300 000 0000</p>
+            <p id="ciudadUsuario" class="perfil-email"><i class="material-icons tiny">location_on</i> Bogotá, Colombia</p>
+        </div>
+        <div class="perfil-hero-actions">
+            <a href="editar-perfil.html" class="btn waves-effect waves-light purple accent-3">
+                <i class="material-icons left">edit</i>Editar perfil
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row perfil-stats-row">
+        <div class="col s12 m4">
+            <div class="card-panel perfil-stat-card center">
+                <i class="material-icons perfil-stat-icon">confirmation_number</i>
+                <h3 class="perfil-stat-num" id="totalCompras">5</h3>
+                <p class="perfil-stat-label">Compras totales</p>
+            </div>
+        </div>
+        <div class="col s12 m4">
+            <div class="card-panel perfil-stat-card center">
+                <i class="material-icons perfil-stat-icon">event</i>
+                <h3 class="perfil-stat-num" id="eventosProximos">2</h3>
+                <p class="perfil-stat-label">Eventos próximos</p>
+            </div>
+        </div>
+        <div class="col s12 m4">
+            <div class="card-panel perfil-stat-card center">
+                <i class="material-icons perfil-stat-icon">attach_money</i>
+                <h3 class="perfil-stat-num" id="totalGasto">$480.000</h3>
+                <p class="perfil-stat-label">Total gastado</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis Boletas -->
+    <div class="card-panel perfil-section">
+        <div class="perfil-section-header">
+            <h5><i class="material-icons left">local_activity</i>Mis Boletas</h5>
+            <div class="perfil-filtros">
+                <a class="btn-small waves-effect waves-light filtro-btn active" onclick="filtrar('todas', this)">Todas</a>
+                <a class="btn-small waves-effect waves-light filtro-btn" onclick="filtrar('valida', this)">Validas</a>
+                <a class="btn-small waves-effect waves-light filtro-btn" onclick="filtrar('usada', this)">Usadas</a>
+            </div>
+        </div>
+
+        <!-- Lista de boletas -->
+        <div id="listaBoletas">
+
+            <!-- Boleta 1 -->
+            <div class="boleta-item" data-estado="valida">
+                <div class="boleta-evento-info">
+                    <div class="boleta-color-bar" style="background:#8e24aa;"></div>
+                    <div>
+                        <p class="boleta-nombre">Festival de Rock Bogota 2025</p>
+                        <span class="boleta-fecha"><i class="material-icons tiny">calendar_today</i> 15 Ago 2025 · 7:00 PM</span>
+                        <span class="boleta-lugar"><i class="material-icons tiny">location_on</i> Estadio El Campin, Bogota</span>
+                    </div>
+                </div>
+                <div class="boleta-meta">
+                    <span class="boleta-precio">$95.000</span>
+                    <span class="boleta-estado valida">Valida</span>
+                    <a class="btn-small waves-effect waves-light purple darken-2" onclick="verQR(this)"
+                       data-nombre="Festival de Rock Bogota 2025"
+                       data-fecha="15 Ago 2025 · 7:00 PM"
+                       data-lugar="Estadio El Campin, Bogota"
+                       data-codigo="VE-2025-0001">
+                        <i class="material-icons left">qr_code</i>Ver QR
+                    </a>
+                </div>
+            </div>
+
+            <!-- Boleta 2 -->
+            <div class="boleta-item" data-estado="valida">
+                <div class="boleta-evento-info">
+                    <div class="boleta-color-bar" style="background:#7b1fa2;"></div>
+                    <div>
+                        <p class="boleta-nombre">Coldplay: Music of the Spheres</p>
+                        <span class="boleta-fecha"><i class="material-icons tiny">calendar_today</i> 22 Sep 2025 · 8:30 PM</span>
+                        <span class="boleta-lugar"><i class="material-icons tiny">location_on</i> Movistar Arena, Bogota</span>
+                    </div>
+                </div>
+                <div class="boleta-meta">
+                    <span class="boleta-precio">$180.000</span>
+                    <span class="boleta-estado valida">Valida</span>
+                    <a class="btn-small waves-effect waves-light purple darken-2" onclick="verQR(this)"
+                       data-nombre="Coldplay: Music of the Spheres"
+                       data-fecha="22 Sep 2025 · 8:30 PM"
+                       data-lugar="Movistar Arena, Bogota"
+                       data-codigo="VE-2025-0002">
+                        <i class="material-icons left">qr_code</i>Ver QR
+                    </a>
+                </div>
+            </div>
+
+            <!-- Boleta 3 -->
+            <div class="boleta-item" data-estado="usada">
+                <div class="boleta-evento-info">
+                    <div class="boleta-color-bar" style="background:#555;"></div>
+                    <div>
+                        <p class="boleta-nombre">Carnaval de Barranquilla 2025</p>
+                        <span class="boleta-fecha"><i class="material-icons tiny">calendar_today</i> 1 Mar 2025 · 10:00 AM</span>
+                        <span class="boleta-lugar"><i class="material-icons tiny">location_on</i> Via 40, Barranquilla</span>
+                    </div>
+                </div>
+                <div class="boleta-meta">
+                    <span class="boleta-precio">$75.000</span>
+                    <span class="boleta-estado usada">Usada</span>
+                    <a class="btn-small waves-effect waves-light grey darken-2 disabled">
+                        <i class="material-icons left">qr_code</i>Ver QR
+                    </a>
+                </div>
+            </div>
+
+            <!-- Boleta 4 -->
+            <div class="boleta-item" data-estado="usada">
+                <div class="boleta-evento-info">
+                    <div class="boleta-color-bar" style="background:#555;"></div>
+                    <div>
+                        <p class="boleta-nombre">Feria de las Flores Medellin</p>
+                        <span class="boleta-fecha"><i class="material-icons tiny">calendar_today</i> 7 Ago 2024 · 9:00 AM</span>
+                        <span class="boleta-lugar"><i class="material-icons tiny">location_on</i> Centro de Medellin</span>
+                    </div>
+                </div>
+                <div class="boleta-meta">
+                    <span class="boleta-precio">$55.000</span>
+                    <span class="boleta-estado usada">Usada</span>
+                    <a class="btn-small waves-effect waves-light grey darken-2 disabled">
+                        <i class="material-icons left">qr_code</i>Ver QR
+                    </a>
+                </div>
+            </div>
+
+            <!-- Boleta 5 -->
+            <div class="boleta-item" data-estado="usada">
+                <div class="boleta-evento-info">
+                    <div class="boleta-color-bar" style="background:#555;"></div>
+                    <div>
+                        <p class="boleta-nombre">Rock al Parque 2024</p>
+                        <span class="boleta-fecha"><i class="material-icons tiny">calendar_today</i> 28 Jun 2024 · 12:00 PM</span>
+                        <span class="boleta-lugar"><i class="material-icons tiny">location_on</i> Parque Simon Bolivar, Bogota</span>
+                    </div>
+                </div>
+                <div class="boleta-meta">
+                    <span class="boleta-precio">$75.000</span>
+                    <span class="boleta-estado usada">Usada</span>
+                    <a class="btn-small waves-effect waves-light grey darken-2 disabled">
+                        <i class="material-icons left">qr_code</i>Ver QR
+                    </a>
+                </div>
+            </div>
+
+        </div><!-- /listaBoletas -->
+
+        <!-- Estado vacio -->
+        <div class="boletas-vacias hide" id="boletasVacias">
+            <i class="material-icons large">confirmation_number</i>
+            <p>No tienes boletas en esta categoria</p>
+        </div>
+
+    </div><!-- /perfil-section -->
+
+</main>
+
+<!-- Modal QR -->
+<div id="modalQR" class="modal qr-modal">
+    <div class="modal-content center">
+        <div class="qr-modal-logo">VivaEventos</div>
+        <div class="qr-code-wrap">
+            <!-- QR generado con SVG simple -->
+            <canvas id="qrCanvas" width="200" height="200"></canvas>
+        </div>
+        <h5 id="qrNombre" class="qr-evento-nombre"></h5>
+        <p id="qrFecha" class="qr-dato"><i class="material-icons tiny">calendar_today</i> <span></span></p>
+        <p id="qrLugar" class="qr-dato"><i class="material-icons tiny">location_on</i> <span></span></p>
+        <p id="qrCodigo" class="qr-codigo"></p>
+        <span class="boleta-estado valida qr-estado-badge">Boleta Valida</span>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="btn waves-effect waves-light purple darken-2" onclick="descargarQR()">
+            <i class="material-icons left">download</i>Descargar
+        </a>
+        <a href="#!" class="modal-close btn-flat waves-effect white-text">Cerrar</a>
+    </div>
+</div>
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
+
+<script src="js/materialize.js"></script>
+<script src="js/perfil.js"></script>
+</body>
+</html>

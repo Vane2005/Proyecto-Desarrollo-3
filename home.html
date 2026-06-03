@@ -1,21 +1,289 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>VivaEventos S.A.S</title>
-
-  <!-- CSS  -->
+  <title>VivaEventos - Eventos</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <style>
+    .events-grid { padding: 2rem 0; }
+    .event-card {
+      background: #1e1030;
+      border-radius: 16px;
+      border: 1px solid rgba(180,120,255,0.15);
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
+      height: 100%;
+    }
+    .event-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(180,120,255,0.4);
+    }
+    .event-card .card-content { padding: 1.4rem; }
+    .event-card .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f3e8ff;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #a98ecf;
+      font-size: 0.88rem;
+      margin-top: 0.4rem;
+    }
+    .event-meta .material-icons { font-size: 1rem; }
+    .event-card .card-action {
+      background: transparent;
+      border-top: 1px solid rgba(180,120,255,0.1);
+      padding: 0.8rem 1.4rem;
+    }
+    .event-card .card-action a {
+      color: #b47fff !important;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .page-header {
+      padding: 2.5rem 0 1rem;
+      border-bottom: 1px solid rgba(180,120,255,0.12);
+      margin-bottom: 1rem;
+    }
+    .page-header h4 { color: #f3e8ff; font-weight: 600; margin: 0; }
+    .page-header p { color: #a98ecf; margin: 0.3rem 0 0; }
+    #loading-state, #error-state, #empty-state {
+      text-align: center;
+      padding: 4rem 0;
+      color: #a98ecf;
+    }
+    #error-state .material-icons,
+    #empty-state .material-icons { font-size: 3rem; display: block; margin-bottom: 1rem; }
+    .user-greeting { color: #b47fff; font-weight: 500; }
+
+    /* Modal de detalle */
+    .modal { background: #1a0d2e !important; border-radius: 16px; }
+    .modal .modal-content { color: #ECE9FF; }
+    .modal .modal-footer { background: #1a0d2e !important; border-top: 1px solid rgba(180,120,255,0.15); }
+    .modal h5 { color: #f3e8ff; font-weight: 600; }
+    .ticket-chip {
+      display: inline-block;
+      background: rgba(180,120,255,0.12);
+      border: 1px solid rgba(180,120,255,0.25);
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      margin: 0.3rem 0.2rem;
+      font-size: 0.85rem;
+      color: #d6b8ff;
+    }
+    .ticket-chip strong { color: #f3e8ff; }
+    .detail-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(180,120,255,0.08);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      margin: 0.3rem 0.3rem 0.3rem 0;
+      font-size: 0.85rem;
+      color: #c4a4f0;
+    }
+    .detail-badge .material-icons { font-size: 1rem; }
+  </style>
 </head>
 <body>
-  <nav class="purple darken-4" role="navigation">
-    <div class="nav-wrapper container">
-      <a id="logo-container" href="index.html" class="brand-logo white-text">VivaEventos</a>
-      <ul class="right hide-on-med-and-down">
-        <i class="medium material-icons" href="#carrito">shopping_cart</i>
-      </ul>
+<nav role="navigation">
+  <div class="nav-wrapper container">
+    <a href="index.html" class="brand-logo white-text">VivaEventos</a>
+    <ul class="right hide-on-med-and-down">
+      <li><span id="nav-greeting" class="white-text" style="line-height:64px;padding:0 1rem;font-size:0.9rem"></span></li>
+      <li><a href="#" onclick="logout()" class="white-text" style="font-size:0.9rem">
+        <i class="material-icons left">logout</i>Salir
+      </a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h4>Eventos disponibles</h4>
+    <p>Encontrá los mejores eventos cerca de vos</p>
+  </div>
+
+  <!-- Estados -->
+  <div id="loading-state">
+    <div class="preloader-wrapper active">
+      <div class="spinner-layer spinner-purple-only">
+        <div class="circle-clipper left"><div class="circle"></div></div>
+        <div class="gap-patch"><div class="circle"></div></div>
+        <div class="circle-clipper right"><div class="circle"></div></div>
+      </div>
     </div>
-  </nav>
+    <p style="margin-top:1rem">Cargando eventos...</p>
+  </div>
+
+  <div id="error-state" style="display:none">
+    <i class="material-icons">error_outline</i>
+    <p>No se pudieron cargar los eventos. Verificá que el servidor esté activo.</p>
+    <a class="btn purple darken-3 waves-effect" onclick="loadEvents()">Reintentar</a>
+  </div>
+
+  <div id="empty-state" style="display:none">
+    <i class="material-icons">event_busy</i>
+    <p>No hay eventos disponibles por el momento.</p>
+  </div>
+
+  <!-- Grilla de eventos -->
+  <div id="events-grid" class="row events-grid" style="display:none"></div>
+</div>
+
+<!-- Modal detalle evento -->
+<div id="event-modal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h5 id="modal-title"></h5>
+    <div id="modal-badges" style="margin:0.8rem 0"></div>
+    <p id="modal-description" style="color:#c4a4f0;margin:1rem 0"></p>
+    <h6 style="color:#b47fff;font-weight:600;margin-top:1.5rem">Tipos de boleta</h6>
+    <div id="modal-tickets" style="margin-top:0.5rem"></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close btn-flat" style="color:#a98ecf">Cerrar</a>
+    <a href="pago.html" class="btn purple darken-3 waves-effect" style="margin-left:0.5rem">
+      <i class="material-icons left">confirmation_number</i>Comprar boleta
+    </a>
+  </div>
+</div>
+
+<script src="js/materialize.js"></script>
+<script>
+  const EVENT_SERVICE_URL = 'http://localhost:8082';
+
+  // Redirigir si no hay token
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = 'login.html';
+
+  // Saludo en el nav
+  const userEmail = localStorage.getItem('userEmail');
+  if (userEmail) {
+    document.getElementById('nav-greeting').textContent = userEmail;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    M.Modal.init(document.querySelectorAll('.modal'));
+    loadEvents();
+  });
+
+  async function loadEvents() {
+    showState('loading');
+    try {
+      const res = await fetch(`${EVENT_SERVICE_URL}/api/v1/events`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const events = await res.json();
+
+      if (events.length === 0) { showState('empty'); return; }
+
+      renderEvents(events);
+      showState('grid');
+    } catch (err) {
+      console.error('Error cargando eventos:', err);
+      showState('error');
+    }
+  }
+
+  function renderEvents(events) {
+    const grid = document.getElementById('events-grid');
+    grid.innerHTML = events.map(e => `
+        <div class="col s12 m6 l4" style="margin-bottom:1.2rem">
+          <div class="event-card card" onclick="openEventDetail('${e.id}')">
+            <div class="card-content">
+              <div class="card-title">${escHtml(e.name)}</div>
+              <div class="event-meta">
+                <i class="material-icons">calendar_today</i>
+                ${formatDate(e.eventDate)}
+              </div>
+              <div class="event-meta">
+                <i class="material-icons">location_on</i>
+                ${escHtml(e.location)}
+              </div>
+            </div>
+            <div class="card-action">
+              <a>Ver detalle →</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  async function openEventDetail(eventId) {
+    try {
+      const res = await fetch(`${EVENT_SERVICE_URL}/api/v1/events/${eventId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      const e = await res.json();
+
+      document.getElementById('modal-title').textContent = e.name;
+      document.getElementById('modal-description').textContent = e.description || '';
+
+      document.getElementById('modal-badges').innerHTML = `
+          <span class="detail-badge"><i class="material-icons">calendar_today</i>${formatDate(e.eventDate)}</span>
+          <span class="detail-badge"><i class="material-icons">location_on</i>${escHtml(e.location)}</span>
+          <span class="detail-badge"><i class="material-icons">people</i>Aforo: ${e.capacity}</span>
+        `;
+
+      const ticketsHtml = e.ticketTypes && e.ticketTypes.length > 0
+              ? e.ticketTypes.map(t => `
+              <span class="ticket-chip">
+                <strong>${escHtml(t.type)}</strong> —
+                $${Number(t.price).toLocaleString('es-CO')} ·
+                ${t.quantityAvailable} disponibles
+              </span>
+            `).join('')
+              : '<p style="color:#a98ecf;font-size:0.9rem">Sin tipos de boleta definidos aún.</p>';
+
+      document.getElementById('modal-tickets').innerHTML = ticketsHtml;
+
+      // Guardar eventId para la pantalla de pago
+      localStorage.setItem('selectedEventId', eventId);
+
+      M.Modal.getInstance(document.getElementById('event-modal')).open();
+    } catch {
+      M.toast({ html: 'No se pudo cargar el detalle del evento', classes: 'red darken-3' });
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    window.location.href = 'login.html';
+  }
+
+  function showState(state) {
+    document.getElementById('loading-state').style.display = state === 'loading' ? 'block' : 'none';
+    document.getElementById('error-state').style.display   = state === 'error'   ? 'block' : 'none';
+    document.getElementById('empty-state').style.display   = state === 'empty'   ? 'block' : 'none';
+    document.getElementById('events-grid').style.display   = state === 'grid'    ? 'flex'  : 'none';
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('es-CO', {
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>
