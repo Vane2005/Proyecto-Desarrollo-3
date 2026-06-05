@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Dashboard — VivaEventos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/dashboard.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="purple darken-4" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="home.html" class="brand-logo white-text">VivaEventos</a>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="home.html" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
+            <li><a href="perfil.html" class="white-text"><i class="material-icons left">account_circle</i>Perfil</a></li>
+            <li><a href="Dashboard.html" class="white-text active-nav"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+            <li><a href="login.html" class="white-text" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="nav-mobile">
+    <li><a href="home.html"><i class="material-icons left">home</i>Inicio</a></li>
+    <li><a href="perfil.html"><i class="material-icons left">account_circle</i>Perfil</a></li>
+    <li><a href="Dashboard.html"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+    <li><a href="login.html" onclick="cerrarSesion(event)"><i class="material-icons left">logout</i>Salir</a></li>
+</ul>
+
+<main class="container dashboard-main">
+    
+    <!-- Header del Dashboard -->
+    <div class="dashboard-header">
+        <h3 class="white-text">Dashboard de Ventas</h3>
+        <p class="light-text">Métricas en tiempo real del desempeño de tus eventos</p>
+    </div>
+
+    <!-- Loader -->
+    <div id="loading-spinner" class="center-align" style="padding: 2rem 0;">
+        <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-purple-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de métricas -->
+    <div id="metrics-container" style="display: none;">
+
+        <!-- Row 1: Métricas Principales -->
+        <div class="row">
+            <!-- Tickets Vendidos -->
+            <div class="col s12 m6 l3">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">local_activity</i>
+                        <span class="metric-title">Tickets Vendidos</span>
+                    </div>
+                    <h2 class="metric-value" id="ticketsSold">0</h2>
+                    <p class="metric-label">entradas comercializadas</p>
+                </div>
+            </div>
+
+            <!-- Ingresos Totales -->
+            <div class="col s12 m6 l3">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">attach_money</i>
+                        <span class="metric-title">Ingresos Totales</span>
+                    </div>
+                    <h2 class="metric-value" id="totalRevenue">$0</h2>
+                    <p class="metric-label">ventas acumuladas</p>
+                </div>
+            </div>
+
+            <!-- Tickets Validados -->
+            <div class="col s12 m6 l3">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">verified</i>
+                        <span class="metric-title">Tickets Validados</span>
+                    </div>
+                    <h2 class="metric-value" id="validatedTickets">0</h2>
+                    <p class="metric-label">entradas canjeadas</p>
+                </div>
+            </div>
+
+            <!-- Tickets Pendientes -->
+            <div class="col s12 m6 l3">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">schedule</i>
+                        <span class="metric-title">Tickets Pendientes</span>
+                    </div>
+                    <h2 class="metric-value" id="pendingTickets">0</h2>
+                    <p class="metric-label">entradas sin usar</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col s12 m6 l4">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">shopping_cart</i>
+                        <span class="metric-title">Compras Abandonadas</span>
+                    </div>
+                    <h2 class="metric-value" id="abandonedPurchases">0</h2>
+                    <p class="metric-label">carritos sin completar</p>
+                </div>
+            </div>
+
+            <!-- Hora Pico de Ventas -->
+            <div class="col s12 m6 l4">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">trending_up</i>
+                        <span class="metric-title">Hora Pico de Ventas</span>
+                    </div>
+                    <h2 class="metric-value" id="peakSalesHour">-</h2>
+                    <p class="metric-label">momento de mayor venta</p>
+                </div>
+            </div>
+
+            <div class="col s12 m12 l4">
+                <div class="metric-card card-panel">
+                    <div class="metric-header">
+                        <i class="material-icons metric-icon">info</i>
+                        <span class="metric-title">Punto de abandono de compra</span>
+                    </div>
+                    <div id="abandonedByStep" class="abandoned-steps">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Resumen -->
+        <div class="row">
+            <div class="col s12">
+                <div class="card-panel dashboard-summary">
+                    <h5 class="white-text"><i class="material-icons left">info</i>Resumen de Desempeño</h5>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">Tasa de Conversión:</span>
+                            <span class="summary-value" id="conversionRate">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Tasa de Abandono:</span>
+                            <span class="summary-value" id="abandonmentRate">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Última Actualización:</span>
+                            <span class="summary-value" id="lastUpdate">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="error-message" style="display: none;">
+        <div class="card-panel red darken-4">
+            <h5 class="white-text"><i class="material-icons left">error</i>Error al cargar las métricas</h5>
+            <p class="white-text" id="error-text">No se pudieron cargar los datos del servidor.</p>
+            <button class="btn waves-effect waves-light purple accent-3" onclick="loadMetrics()">
+                <i class="material-icons left">refresh</i>Reintentar
+            </button>
+        </div>
+    </div>
+
+</main>
+
+<script src="js/materialize.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

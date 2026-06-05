@@ -1,0 +1,210 @@
+/* Dashboard Stylesheet */
+
+.dashboard-main {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Header del Dashboard */
+.dashboard-header {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2a0e3d 0%, #1a0820 100%);
+}
+
+.dashboard-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.dashboard-header .light-text {
+    color: #c9a0d6;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Tarjetas de Métricas */
+.metric-card {
+    background: rgba(34, 13, 60, 0.95) !important;
+    border-left: 4px solid #8e24aa;
+    border-radius: 12px;
+    padding: 1.5rem !important;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.metric-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(142, 36, 170, 0.3) !important;
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.metric-icon {
+    font-size: 2rem;
+    color: #8e24aa;
+}
+
+.metric-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #c9a0d6;
+    font-weight: 600;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f8efff;
+    margin: 0.5rem 0;
+    word-break: break-word;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: #9b8ab8;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Abandonos por Paso */
+.abandoned-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.step-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border-left: 3px solid #7b1fa2;
+}
+
+.step-name {
+    color: #d6d0f0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.step-count {
+    color: #8e24aa;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Resumen de Desempeño */
+.dashboard-summary {
+    background: rgba(34, 13, 60, 0.95) !important;
+    border-radius: 12px;
+    padding: 2rem !important;
+    border-left: 4px solid #8e24aa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dashboard-summary h5 {
+    color: #f8efff;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.summary-label {
+    color: #9b8ab8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.summary-value {
+    color: #8e24aa;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* Loader */
+.preloader-wrapper circle {
+    stroke: #8e24aa !important;
+}
+
+/* Estilos responsivos */
+@media only screen and (max-width: 992px) {
+    .dashboard-header h3 {
+        font-size: 2rem;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .dashboard-main {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .dashboard-header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .metric-value {
+        font-size: 1.8rem;
+    }
+
+    .metric-card {
+        padding: 1rem !important;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#metrics-container > div {
+    animation: fadeIn 0.5s ease-out;
+}
