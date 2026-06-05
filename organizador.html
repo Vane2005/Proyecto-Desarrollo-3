@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>VivaEventos - Panel Organizador</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="css/organizador.css" rel="stylesheet"/>
+</head>
+<body>
+
+<nav>
+    <div class="brand">Viva<span>Eventos</span></div>
+    <span class="nav-user">
+    <i class="material-icons">person_outline</i>
+    <span id="nav-email">organizador@email.com</span>
+  </span>
+    <button class="nav-logout" onclick="logout()">
+        <i class="material-icons">logout</i>
+        Salir
+    </button>
+</nav>
+
+<div class="layout">
+
+    <!-- MAIN TABLE -->
+    <main class="main">
+        <div class="section-header">
+            <h2>Mis eventos</h2>
+            <p>Gestioná los eventos que creaste</p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre del evento</th>
+                    <th>Cupos</th>
+                    <th>Precio</th>
+                    <th>Código</th>
+                </tr>
+                </thead>
+                <tbody id="events-tbody">
+                <!-- filled by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <p class="sidebar-title">Acciones</p>
+
+        <button class="sb-btn primary" onclick="openCreate()">
+            <i class="material-icons">add_circle_outline</i>
+            Crear evento
+        </button>
+
+        <button class="sb-btn" id="btn-edit" disabled onclick="openEdit()">
+            <i class="material-icons">edit</i>
+            Modificar evento
+        </button>
+
+        <hr class="sb-divider"/>
+
+        <button class="sb-btn danger" id="btn-cancel-ev" disabled onclick="openCancel()">
+            <i class="material-icons">cancel</i>
+            Cancelar evento
+        </button>
+
+        <p class="sb-hint" id="sb-hint-text">Seleccioná un evento de la tabla para habilitar las acciones.</p>
+    </aside>
+</div>
+
+<!-- ======================== MODAL CREAR ======================== -->
+<div class="overlay" id="overlay-create">
+    <div class="modal-box">
+        <button class="modal-close-btn" onclick="closeModal('overlay-create')">
+            <i class="material-icons">close</i>
+        </button>
+        <h3>Crear nuevo evento</h3>
+        <div class="form-grid">
+            <div class="field full">
+                <label>Nombre del evento *</label>
+                <input type="text" id="c-name" placeholder="Ej: Festival de Jazz 2026"/>
+            </div>
+            <div class="field full">
+                <label>Descripción</label>
+                <textarea id="c-desc" placeholder="Describí el evento..."></textarea>
+            </div>
+            <div class="field">
+                <label>Fecha y hora *</label>
+                <input type="datetime-local" id="c-date"/>
+            </div>
+            <div class="field">
+                <label>Lugar *</label>
+                <input type="text" id="c-location" placeholder="Ciudad, recinto"/>
+            </div>
+            <div class="field">
+                <label>Cupos disponibles *</label>
+                <input type="number" id="c-capacity" placeholder="100" min="1"/>
+            </div>
+            <div class="field">
+                <label>Precio (COP) *</label>
+                <input type="number" id="c-price" placeholder="50000" min="0"/>
+            </div>
+            <div class="field">
+                <label>Tipo de boleta</label>
+                <select id="c-ticket-type">
+                    <option value="General">General</option>
+                    <option value="VIP">VIP</option>
+                    <option value="Palco">Palco</option>
+                    <option value="Platea">Platea</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Código del evento *</label>
+                <input type="text" id="c-code" placeholder="EVT-001"/>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('overlay-create')">Cancelar</button>
+            <button class="btn-submit" onclick="submitCreate()">
+                <i class="material-icons">add</i>
+                Crear evento
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== MODAL EDITAR ======================== -->
+<div class="overlay" id="overlay-edit">
+    <div class="modal-box">
+        <button class="modal-close-btn" onclick="closeModal('overlay-edit')">
+            <i class="material-icons">close</i>
+        </button>
+        <h3>Modificar evento</h3>
+        <div class="form-grid">
+            <div class="field full">
+                <label>Nombre del evento *</label>
+                <input type="text" id="e-name"/>
+            </div>
+            <div class="field full">
+                <label>Descripción</label>
+                <textarea id="e-desc"></textarea>
+            </div>
+            <div class="field">
+                <label>Fecha y hora *</label>
+                <input type="datetime-local" id="e-date"/>
+            </div>
+            <div class="field">
+                <label>Lugar *</label>
+                <input type="text" id="e-location"/>
+            </div>
+            <div class="field">
+                <label>Cupos disponibles *</label>
+                <input type="number" id="e-capacity" min="1"/>
+            </div>
+            <div class="field">
+                <label>Precio (COP) *</label>
+                <input type="number" id="e-price" min="0"/>
+            </div>
+            <div class="field">
+                <label>Tipo de boleta</label>
+                <select id="e-ticket-type">
+                    <option value="General">General</option>
+                    <option value="VIP">VIP</option>
+                    <option value="Palco">Palco</option>
+                    <option value="Platea">Platea</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Código del evento</label>
+                <input type="text" id="e-code" disabled style="opacity:0.5"/>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('overlay-edit')">Cancelar</button>
+            <button class="btn-submit" onclick="submitEdit()">
+                <i class="material-icons">save</i>
+                Guardar cambios
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== MODAL CANCELAR ======================== -->
+<div class="overlay" id="overlay-cancel">
+    <div class="modal-box" style="max-width:420px">
+        <button class="modal-close-btn" onclick="closeModal('overlay-cancel')">
+            <i class="material-icons">close</i>
+        </button>
+        <h3>Cancelar evento</h3>
+        <p style="color:var(--muted);line-height:1.7;font-size:0.9rem">
+            ¿Estás seguro que querés cancelar el evento
+            <strong id="cancel-event-name" style="color:var(--text)"></strong>?
+            Esta acción no se puede deshacer.
+        </p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('overlay-cancel')">No, volver</button>
+            <button class="btn-submit danger-submit" onclick="submitCancel()">
+                <i class="material-icons">delete_forever</i>
+                Sí, cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" style="display:none"></div>
+
+<script>
+    const API = 'http://localhost:8082';
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+    const email = localStorage.getItem('userEmail');
+    if (email) document.getElementById('nav-email').textContent = email;
+
+    let events = [];
+    let selectedId = null;
+
+    /* ---------- LOAD ---------- */
+    async function loadEvents() {
+        try {
+            const res = await fetch(`${API}/api/v1/events`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            events = await res.json();
+
+        } catch (err) {
+            console.error("Error cargando eventos:", err);
+            events = [];
+        }
+
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('events-tbody');
+
+        if (!events || events.length === 0) {
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center; padding:20px;">
+                    No hay eventos disponibles
+                </td>
+            </tr>
+        `;
+            return;
+        }
+
+        tbody.innerHTML = events.map(e => {
+
+            const firstTicket = e.ticketTypes?.[0];
+
+            const capacity =
+                e.capacity ??
+                firstTicket?.quantityAvailable ??
+                null;
+
+            const price =
+                e.price ??
+                firstTicket?.price ??
+                null;
+
+            return `
+            <tr>
+                <td>${esc(e.name)}</td>
+                <td>${capacity != null ? capacity : '-'}</td>
+                <td>${price != null ? '$' + Number(price).toLocaleString('es-CO') : '-'}</td>
+                <td>${esc(e.code ?? e.id)}</td>
+            </tr>
+        `;
+        }).join('');
+    }
+
+    function selectRow(id) {
+        selectedId = selectedId === id ? null : id;
+        renderTable();
+        const on = !!selectedId;
+        document.getElementById('btn-edit').disabled = !on;
+        document.getElementById('btn-cancel-ev').disabled = !on;
+        document.getElementById('sb-hint-text').textContent = on
+            ? 'Podés modificar o cancelar el evento seleccionado.'
+            : 'Seleccioná un evento de la tabla para habilitar las acciones.';
+    }
+
+    function getSelected() { return events.find(e => e.id === selectedId); }
+
+    /* ---------- CREATE ---------- */
+    function openCreate() {
+        ['c-name','c-desc','c-date','c-location','c-capacity','c-price','c-code'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        openModal('overlay-create');
+    }
+
+    async function submitCreate() {
+        const name     = document.getElementById('c-name').value.trim();
+        const date     = document.getElementById('c-date').value;
+        const location = document.getElementById('c-location').value.trim();
+        const capacity = document.getElementById('c-capacity').value;
+        const price    = document.getElementById('c-price').value;
+        const code     = document.getElementById('c-code').value.trim();
+        if (!name || !date || !location || !capacity || !price || !code) {
+            toast('Completá todos los campos obligatorios.'); return;
+        }
+        const body = {
+            name, eventDate: date, location, capacity: +capacity,
+            price: +price, code,
+            description: document.getElementById('c-desc').value.trim(),
+            ticketType: document.getElementById('c-ticket-type').value,
+        };
+        try {
+            const res = await fetch(`${API}/api/v1/events`, {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) throw new Error();
+            const created = await res.json();
+            events.push(created);
+        } catch {
+            events.push({ ...body, id: Date.now().toString() });
+        }
+        closeModal('overlay-create');
+        renderTable();
+        toast('✓ Evento creado correctamente.');
+    }
+
+    /* ---------- EDIT ---------- */
+    function openEdit() {
+        const e = getSelected(); if (!e) return;
+        document.getElementById('e-name').value     = e.name;
+        document.getElementById('e-desc').value     = e.description || '';
+        document.getElementById('e-date').value     = (e.eventDate || '').substring(0,16);
+        document.getElementById('e-location').value = e.location;
+        document.getElementById('e-capacity').value = e.capacity;
+        document.getElementById('e-price').value    = e.price;
+        document.getElementById('e-code').value     = e.code;
+        document.getElementById('e-ticket-type').value = e.ticketType || 'General';
+        openModal('overlay-edit');
+    }
+
+    async function submitEdit() {
+        const e = getSelected(); if (!e) return;
+        const name     = document.getElementById('e-name').value.trim();
+        const date     = document.getElementById('e-date').value;
+        const location = document.getElementById('e-location').value.trim();
+        const capacity = document.getElementById('e-capacity').value;
+        const price    = document.getElementById('e-price').value;
+        if (!name || !date || !location || !capacity || !price) {
+            toast('Completá todos los campos obligatorios.'); return;
+        }
+        const updates = {
+            name, eventDate: date, location,
+            capacity: +capacity, price: +price,
+            description: document.getElementById('e-desc').value.trim(),
+            ticketType: document.getElementById('e-ticket-type').value,
+        };
+        try {
+            const res = await fetch(`${API}/api/v1/events/${e.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+                body: JSON.stringify(updates)
+            });
+            if (!res.ok) throw new Error();
+            const updated = await res.json();
+            events = events.map(ev => ev.id === e.id ? updated : ev);
+        } catch {
+            events = events.map(ev => ev.id === e.id ? { ...ev, ...updates } : ev);
+        }
+        closeModal('overlay-edit');
+        renderTable();
+        toast('✓ Evento actualizado.');
+    }
+
+    /* ---------- CANCEL ---------- */
+    function openCancel() {
+        const e = getSelected(); if (!e) return;
+        document.getElementById('cancel-event-name').textContent = `"${e.name}"`;
+        openModal('overlay-cancel');
+    }
+
+    async function submitCancel() {
+        const e = getSelected(); if (!e) return;
+        try {
+            await fetch(`${API}/api/v1/events/${e.id}`, {
+                method: 'DELETE',
+                headers: { Authorization:`Bearer ${token}` }
+            });
+        } catch {}
+        events = events.filter(ev => ev.id !== e.id);
+        selectedId = null;
+        closeModal('overlay-cancel');
+        renderTable();
+        document.getElementById('btn-edit').disabled = true;
+        document.getElementById('btn-cancel-ev').disabled = true;
+        document.getElementById('sb-hint-text').textContent = 'Seleccioná un evento de la tabla para habilitar las acciones.';
+        toast('Evento cancelado.');
+    }
+
+    /* ---------- UTILS ---------- */
+    function openModal(id)  { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.overlay').forEach(ov => {
+        ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+    });
+
+    let toastTimer;
+    function toast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.classList.remove('hide');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            el.classList.add('hide');
+            setTimeout(() => el.style.display = 'none', 420);
+        }, 2800);
+    }
+
+    function esc(s) {
+        if (!s) return '';
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'login.html';
+    }
+
+    loadEvents();
+</script>
+</body>
+</html>
