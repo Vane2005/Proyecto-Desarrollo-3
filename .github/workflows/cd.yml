@@ -25,5 +25,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: vane0205/${{ github.event.repository.name }}:latest
+          tags: vane0205/frontend:latest
 
