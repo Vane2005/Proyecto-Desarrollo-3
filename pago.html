@@ -145,6 +145,7 @@
 <script>
     const ORDER_SERVICE_URL   = '/api/orders';
     const PAYMENT_SERVICE_URL = '/api/payments';
+    const EVENT_SERVICE_URL   = '/api/events';
 
     const token   = localStorage.getItem('token');
     const userId  = localStorage.getItem('userId');   // guardado al hacer login
@@ -204,7 +205,7 @@
     async function cargarTicketTypes() {
         try {
             const res = await fetch(
-                `/api/events/api/v1/events/${eventId}`,
+                `${EVENT_SERVICE_URL}/api/v1/events/${eventId}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
             if (!res.ok) throw new Error();
