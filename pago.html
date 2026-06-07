@@ -143,8 +143,8 @@
 
 <script src="js/materialize.js"></script>
 <script>
-    const ORDER_SERVICE_URL   = 'http://localhost:8083';
-    const PAYMENT_SERVICE_URL = 'http://localhost:8084';
+    const ORDER_SERVICE_URL   = '/api/orders';
+    const PAYMENT_SERVICE_URL = '/api/payments';
 
     const token   = localStorage.getItem('token');
     const userId  = localStorage.getItem('userId');   // guardado al hacer login
@@ -204,7 +204,7 @@
     async function cargarTicketTypes() {
         try {
             const res = await fetch(
-                `http://localhost:8082/api/v1/events/${eventId}`,
+                `/api/events/api/v1/events/${eventId}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
             if (!res.ok) throw new Error();

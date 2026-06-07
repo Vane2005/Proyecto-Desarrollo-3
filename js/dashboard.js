@@ -17,7 +17,7 @@ async function loadMetrics() {
 
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8087/dashboard/metrics', {
+        const response = await fetch('/api/dashboard/dashboard/metrics', {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -51,7 +51,7 @@ async function loadMetrics() {
         let errorMsg = error.message;
 
         if (error.message.includes('Failed to fetch')) {
-            errorMsg = 'No se pudo conectar al servidor. Verifica que el backend de Spring Boot está corriendo en http://localhost:8087';
+            errorMsg = 'No se pudo conectar al servidor. Verifica que el backend de Spring Boot está corriendo en /api/dashboard';
         } else if (error.message.includes('HTTP')) {
             errorMsg = `Error del servidor: ${error.message}`;
         }
