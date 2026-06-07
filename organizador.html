@@ -36,9 +36,9 @@
                 <thead>
                 <tr>
                     <th>Nombre del evento</th>
-                    <th>Cupos</th>
-                    <th>Precio</th>
-                    <th>Código</th>
+                    <th>Fecha</th>
+                    <th>Lugar</th>
+                    <th>ID</th>
                 </tr>
                 </thead>
                 <tbody id="events-tbody">
@@ -101,17 +101,27 @@
                 <label>Cupos disponibles *</label>
                 <input type="number" id="c-capacity" placeholder="100" min="1"/>
             </div>
+
             <div class="field">
-                <label>Precio (COP) *</label>
-                <input type="number" id="c-price" placeholder="50000" min="0"/>
+                <label>Precio General (COP)</label>
+                <input type="number" id="c-price-general" min="0" value="0"/>
+            </div>
+
+            <div class="field">
+                <label>Precio VIP (COP)</label>
+                <input type="number" id="c-price-vip" min="0" value="0"/>
+            </div>
+
+            <div class="field">
+                <label>Precio Estudiante (COP)</label>
+                <input type="number" id="c-price-student" min="0" value="0"/>
             </div>
             <div class="field">
-                <label>Tipo de boleta</label>
+                <label>Tipo de boleta principal</label>
                 <select id="c-ticket-type">
-                    <option value="General">General</option>
+                    <option value="GENERAL">GENERAL</option>
                     <option value="VIP">VIP</option>
-                    <option value="Palco">Palco</option>
-                    <option value="Platea">Platea</option>
+                    <option value="STUDENT">Estudiante</option>
                 </select>
             </div>
             <div class="field">
@@ -161,15 +171,16 @@
                 <label>Precio (COP) *</label>
                 <input type="number" id="e-price" min="0"/>
             </div>
-            <div class="field">
-                <label>Tipo de boleta</label>
-                <select id="e-ticket-type">
-                    <option value="General">General</option>
-                    <option value="VIP">VIP</option>
-                    <option value="Palco">Palco</option>
-                    <option value="Platea">Platea</option>
-                </select>
-            </div>
+
+                <div class="field">
+                    <label>Tipo de boleta</label>
+                    <select id="e-ticket-type">
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="VIP">VIP</option>
+                        <option value="STUDENT">Estudiante</option>
+                    </select>
+                </div>
+
             <div class="field">
                 <label>Código del evento</label>
                 <input type="text" id="e-code" disabled style="opacity:0.5"/>
@@ -268,13 +279,16 @@
                 null;
 
             return `
-            <tr>
+            <tr
+                onclick="selectRow('${e.id}')"
+                class="${selectedId === e.id ? 'selected' : ''}"
+            >
                 <td>${esc(e.name)}</td>
-                <td>${capacity != null ? capacity : '-'}</td>
-                <td>${price != null ? '$' + Number(price).toLocaleString('es-CO') : '-'}</td>
-                <td>${esc(e.code ?? e.id)}</td>
+                <td>${e.eventDate ? new Date(e.eventDate).toLocaleDateString('es-CO') : '-'}</td>
+                <td>${esc(e.location)}</td>
+                <td style="font-size:0.75rem;opacity:0.6">${esc(e.id)}</td>
             </tr>
-        `;
+            `;
         }).join('');
     }
 
@@ -293,90 +307,217 @@
 
     /* ---------- CREATE ---------- */
     function openCreate() {
-        ['c-name','c-desc','c-date','c-location','c-capacity','c-price','c-code'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
+
+        document.getElementById('c-name').value = '';
+        document.getElementById('c-desc').value = '';
+        document.getElementById('c-date').value = '';
+        document.getElementById('c-location').value = '';
+        document.getElementById('c-capacity').value = '';
+        document.getElementById('c-price-general').value = 0;
+        document.getElementById('c-price-vip').value = 0;
+        document.getElementById('c-price-student').value = 0;
+        document.getElementById('c-code').value = '';
+        document.getElementById('c-ticket-type').value = 'GENERAL';
+
         openModal('overlay-create');
     }
 
     async function submitCreate() {
-        const name     = document.getElementById('c-name').value.trim();
-        const date     = document.getElementById('c-date').value;
+
+        const name = document.getElementById('c-name').value.trim();
+        const date = document.getElementById('c-date').value;
         const location = document.getElementById('c-location').value.trim();
         const capacity = document.getElementById('c-capacity').value;
-        const price    = document.getElementById('c-price').value;
-        const code     = document.getElementById('c-code').value.trim();
-        if (!name || !date || !location || !capacity || !price || !code) {
-            toast('Completá todos los campos obligatorios.'); return;
+        const priceGeneral =
+            Number(document.getElementById('c-price-general').value);
+
+        const priceVip =
+            Number(document.getElementById('c-price-vip').value);
+
+        const priceStudent =
+            Number(document.getElementById('c-price-student').value);
+        const description = document.getElementById('c-desc').value.trim();
+        const ticketType = document.getElementById('c-ticket-type').value;
+
+        if (!name || !date || !location || !capacity) {
+            toast('Completa todos los campos');
+            return;
         }
-        const body = {
-            name, eventDate: date, location, capacity: +capacity,
-            price: +price, code,
-            description: document.getElementById('c-desc').value.trim(),
-            ticketType: document.getElementById('c-ticket-type').value,
-        };
+
         try {
-            const res = await fetch(`${API}/api/v1/events`, {
-                method: 'POST',
-                headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
-            if (!res.ok) throw new Error();
-            const created = await res.json();
-            events.push(created);
-        } catch {
-            events.push({ ...body, id: Date.now().toString() });
+
+            const eventRes = await fetch(
+                `${API}/api/v1/events`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        'X-User-Id': localStorage.getItem('userId')
+                    },
+                    body: JSON.stringify({
+                        name,
+                        description,
+                        eventDate: new Date(date).toISOString(),
+                        location,
+                        capacity: Number(capacity)
+                    })
+                }
+            );
+
+            if (!eventRes.ok) {
+                throw new Error('Error creando evento');
+            }
+
+            const createdEvent = await eventRes.json();
+
+            const ticketRes = await fetch(
+                `${API}/api/v1/events/${createdEvent.id}/ticket-types`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        'X-User-Id': localStorage.getItem('userId')
+                    },
+                    body: JSON.stringify({
+                        ticketTypes: [
+                            {
+                                type: "GENERAL",
+                                price: priceGeneral,
+                                quantityAvailable: (Number(capacity)/3)
+                            },
+                            {
+                                type: "VIP",
+                                price: priceVip,
+                                quantityAvailable: (Number(capacity)/3)
+                            },
+                            {
+                                type: "STUDENT",
+                                price: priceStudent,
+                                quantityAvailable: (Number(capacity)/3)
+                            }
+                        ]
+                    })
+                }
+            );
+
+            console.log("STATUS:", ticketRes.status);
+
+            const responseText = await ticketRes.text();
+
+            console.log("RESPONSE:", responseText);
+
+            if (!ticketRes.ok) {
+                throw new Error(responseText);
+            }
+
+            await loadEvents();
+
+            closeModal('overlay-create');
+
+            toast('Evento creado correctamente');
+
+        } catch (err) {
+
+            console.error(err);
+
+            toast('Error creando evento');
         }
-        closeModal('overlay-create');
-        renderTable();
-        toast('✓ Evento creado correctamente.');
     }
 
     /* ---------- EDIT ---------- */
-    function openEdit() {
+    /* ---------- EDIT ---------- */
+    async function openEdit() {
         const e = getSelected(); if (!e) return;
-        document.getElementById('e-name').value     = e.name;
-        document.getElementById('e-desc').value     = e.description || '';
-        document.getElementById('e-date').value     = (e.eventDate || '').substring(0,16);
-        document.getElementById('e-location').value = e.location;
-        document.getElementById('e-capacity').value = e.capacity;
-        document.getElementById('e-price').value    = e.price;
-        document.getElementById('e-code').value     = e.code;
-        document.getElementById('e-ticket-type').value = e.ticketType || 'General';
-        openModal('overlay-edit');
+
+        try {
+            const res = await fetch(`${API}/api/v1/events/${e.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const detail = await res.json();
+
+            document.getElementById('e-name').value     = detail.name || '';
+            document.getElementById('e-desc').value     = detail.description || '';
+
+            if (detail.eventDate) {
+                const localDate = new Date(detail.eventDate);
+                const offset = localDate.getTimezoneOffset() * 60000;
+                const localISO = new Date(localDate - offset).toISOString().substring(0, 16);
+                document.getElementById('e-date').value = localISO;
+            }
+
+            document.getElementById('e-location').value = detail.location || '';
+            document.getElementById('e-capacity').value = detail.capacity || '';
+
+            const firstTicket = detail.ticketTypes?.[0];
+            document.getElementById('e-price').value       = firstTicket?.price ?? 0;
+            document.getElementById('e-code').value        = String(detail.id);
+            document.getElementById('e-ticket-type').value = firstTicket?.type || 'GENERAL';
+
+            openModal('overlay-edit');
+
+        } catch (err) {
+            console.error(err);
+            toast('Error cargando datos del evento');
+        }
     }
 
     async function submitEdit() {
         const e = getSelected(); if (!e) return;
+
         const name     = document.getElementById('e-name').value.trim();
         const date     = document.getElementById('e-date').value;
         const location = document.getElementById('e-location').value.trim();
         const capacity = document.getElementById('e-capacity').value;
-        const price    = document.getElementById('e-price').value;
-        if (!name || !date || !location || !capacity || !price) {
-            toast('Completá todos los campos obligatorios.'); return;
+        const desc     = document.getElementById('e-desc').value.trim();
+
+        if (!name || !date || !location || !capacity) {
+            toast('Completá todos los campos obligatorios.');
+            return;
         }
+
+        if (desc.length < 3) {
+            toast('La descripción debe tener al menos 3 caracteres.');
+            return;
+        }
+
+        // Enviar con offset de Colombia para que @Future no falle por zona horaria
         const updates = {
-            name, eventDate: date, location,
-            capacity: +capacity, price: +price,
-            description: document.getElementById('e-desc').value.trim(),
-            ticketType: document.getElementById('e-ticket-type').value,
+            name,
+            description: desc,
+            eventDate: date + ':00-05:00',
+            location,
+            capacity: +capacity,
         };
+
         try {
             const res = await fetch(`${API}/api/v1/events/${e.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'X-User-Id': localStorage.getItem('userId')
+                },
                 body: JSON.stringify(updates)
             });
-            if (!res.ok) throw new Error();
-            const updated = await res.json();
-            events = events.map(ev => ev.id === e.id ? updated : ev);
-        } catch {
-            events = events.map(ev => ev.id === e.id ? { ...ev, ...updates } : ev);
+
+            if (!res.ok) {
+                const errText = await res.text();
+                console.error('Error del backend:', errText);
+                toast('Error al guardar: ' + res.status);
+                return;
+            }
+
+            await loadEvents();
+            closeModal('overlay-edit');
+            toast('✅ Evento actualizado.');
+
+        } catch (err) {
+            console.error(err);
+            toast('Error de conexión');
         }
-        closeModal('overlay-edit');
-        renderTable();
-        toast('✓ Evento actualizado.');
     }
 
     /* ---------- CANCEL ---------- */
@@ -387,21 +528,38 @@
     }
 
     async function submitCancel() {
-        const e = getSelected(); if (!e) return;
+        const e = getSelected();
+        if (!e) return;
+
         try {
-            await fetch(`${API}/api/v1/events/${e.id}`, {
-                method: 'DELETE',
-                headers: { Authorization:`Bearer ${token}` }
-            });
-        } catch {}
-        events = events.filter(ev => ev.id !== e.id);
-        selectedId = null;
+            const res = await fetch(
+                `${API}/api/v1/events/${e.id}/cancel`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        'X-User-Id': localStorage.getItem('userId')
+                    },
+                    body: JSON.stringify({
+                        reason: 'Cancelado por organizador'
+                    })
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error();
+            }
+
+            await loadEvents();
+        } catch (err) {
+            console.error(err);
+            toast('Error cancelando evento');
+            return;
+        }
+
         closeModal('overlay-cancel');
-        renderTable();
-        document.getElementById('btn-edit').disabled = true;
-        document.getElementById('btn-cancel-ev').disabled = true;
-        document.getElementById('sb-hint-text').textContent = 'Seleccioná un evento de la tabla para habilitar las acciones.';
-        toast('Evento cancelado.');
+        toast('Evento cancelado');
     }
 
     /* ---------- UTILS ---------- */
