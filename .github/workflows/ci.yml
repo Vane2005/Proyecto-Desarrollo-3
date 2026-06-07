@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - develop
+    - 'feat/'
+    - 'feature/'
+    - 'fix/**'
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Verificar estructura del proyecto
+        run: |
+          test -f index.html
+          echo "index.html encontrado"
+
+      - name: Verificar sintaxis JS
+        run: |
+          find . -name "*.js" -exec node --check {} \;
