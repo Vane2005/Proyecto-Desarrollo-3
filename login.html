@@ -77,7 +77,11 @@
         // Redirigir según el rol
         if (role === 'GERENTE') {
           window.location.href = 'Dashboard.html';
-        } else {
+        }
+        else if (role === 'ORGANIZADOR') {
+          window.location.href = 'organizador.html';
+        }
+        else {
           window.location.href = 'home.html';
         }
       } catch (error) {
