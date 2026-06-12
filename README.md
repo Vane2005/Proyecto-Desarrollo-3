@@ -1,5 +1,13 @@
 # 🎟️ VivaEventos — Documentación del Proyecto
 
+## Integrantes
+- Vanessa Duran Mona - 2359394
+- Alejandra Osorio Giraldo - 2266128
+- Santiago Useche Tascón - 2266200
+- Alejandro Garzón - 2266088
+- Miguel Angel Arboleda - 2160253
+- José David Mármol - 2266370
+
 Backend del MVP de **VivaEventos**, una plataforma de venta de boletería digital para eventos como conciertos, talleres y conferencias. Construido con arquitectura de microservicios, Clean Architecture, Spring Boot 3.5 y Java 21.
 
 ---
